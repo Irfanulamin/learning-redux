@@ -1,11 +1,11 @@
-import { Button } from "./components/ui/button";
+import Container from "./components/ui/Container";
+import ToDo from "./pages/ToDo";
 
 function App() {
   return (
-    <>
-      <p>todo</p>
-      <Button>Hi</Button>
-    </>
+    <Container>
+      <ToDo></ToDo>
+    </Container>
   );
 }
 
