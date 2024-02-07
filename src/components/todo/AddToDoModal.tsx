@@ -10,21 +10,37 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addTodo } from "@/redux/feature/toDoSlice";
-import { useAppDispatch } from "@/redux/hook";
+import { useAddToDosMutation } from "@/redux/api/api";
 import { DialogClose } from "@radix-ui/react-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@radix-ui/react-select";
 import { FormEvent, useState } from "react";
 
 const AddToDoModal = () => {
   const [task, setTask] = useState("");
   const [description, setDescription] = useState("");
-  const dispatch = useAppDispatch();
+  const [priority, setPriority] = useState("");
+
+  const [addToDos, { data, isLoading, isError, isSuccess }] =
+    useAddToDosMutation();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const id = Math.random().toString(36).substring(2, 7);
-    const taskDetails = { id: id, task: task, description: description };
-    dispatch(addTodo(taskDetails));
+    const taskDetails = {
+      task: task,
+      description: description,
+      isCompleted: false,
+      priority: priority,
+    };
+
+    addToDos(taskDetails);
   };
 
   return (
@@ -62,6 +78,38 @@ const AddToDoModal = () => {
                 id="description"
                 className="col-span-3"
               />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Priority</Label>
+              <Select onValueChange={(value) => setPriority(value)}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="priority" />
+                </SelectTrigger>
+                <SelectContent className="p-2 bg-white border border-slate-500 rounded-md">
+                  <SelectGroup>
+                    <div
+                      className="p-2 text-lg font-semibold"
+                      onClick={() => setPriority("high")}
+                    >
+                      High
+                    </div>
+                    <hr className="border border-slate-500" />
+                    <div
+                      className="p-2 text-lg font-semibold"
+                      onClick={() => setPriority("medium")}
+                    >
+                      Medium
+                    </div>
+                    <hr className="border border-slate-500" />
+                    <div
+                      className="p-2 text-lg font-semibold"
+                      onClick={() => setPriority("easy")}
+                    >
+                      Easy
+                    </div>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <DialogFooter>
